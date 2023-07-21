@@ -1,0 +1,53 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--        <EditText-->
+    <!--            android:id="@+id/search"-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="40dp"-->
+    <!--            android:paddingStart="8dp"-->
+    <!--            android:paddingEnd="8dp"-->
+    <!--            android:layout_marginTop="12dp"-->
+    <!--            android:layout_marginEnd="12dp"-->
+    <!--            android:layout_marginStart="16dp"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            android:background="@drawable/soft_background"-->
+    <!--            android:backgroundTint="@color/signal_colorSecondaryBackground"-->
+    <!--            android:drawablePadding="8dp"-->
+    <!--            android:drawableStart="@drawable/ic_search_24"-->
+    <!--            android:hint="@string/country_selection_fragment__search"-->
+    <!--            app:drawableTint="@color/signal_icon_tint_primary"-->
+    <!--            android:inputType="text"-->
+    <!--            tools:targetApi="m" />-->
+
+    <org.linkmessenger.base.ui.components.RecyclerListView
+        android:id="@+id/items"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:visibility="gone"
+        android:indeterminate="true"
+        app:trackCornerRadius="0.5dp"
+        app:trackThickness="1dp"
+        app:trackColor="@color/signal_colorBackground"
+        app:indicatorColor="@color/signal_colorPrimary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

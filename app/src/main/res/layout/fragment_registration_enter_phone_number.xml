@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:viewBindingIgnore="true"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll_view"
+    android:layout_width="match_parent"
+    android:background="@color/signal_colorBackground"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".registration.fragments.EnterPhoneNumberFragment">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:id="@+id/verify_header"
+        style="@style/Signal.Text.TitleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:gravity="center"
+        android:text="@string/RegistrationActivity_enter_phone_number"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/verify_subheader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textSize="14sp"
+        android:textColor="@color/signal_colorLabel"
+        app:layout_constraintTop_toBottomOf="@+id/verify_header"
+        android:text="@string/RegistrationActivity_link_will_send_you_sms_for_verificate_your_phone_number_carrier_charges_may_apply" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/soft_background"
+        android:elevation="1dp"
+        app:layout_constraintTop_toBottomOf="@id/verify_subheader"
+        tools:layout_editor_absoluteX="16dp"
+        tools:targetApi="lollipop">
+
+        <Spinner
+            android:id="@+id/country_spinner"
+            android:layout_width="0dp"
+            android:layout_height="47dp"
+            android:layout_marginStart="4dp"
+            android:layout_gravity="center_vertical"
+            android:background="@null"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/open_country_picker_icon"/>
+        <ImageView
+            android:id="@+id/open_country_picker_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_baseline_chevron_right_24"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/divider"
+            app:tint="@color/signal_text_primary" />
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/signal_colorBackground"
+            app:layout_constraintTop_toBottomOf="@id/country_spinner" />
+
+        <org.thoughtcrime.securesms.components.LabeledEditText
+            android:id="@+id/country_code"
+            android:layout_width="70dp"
+            android:layout_height="47dp"
+            app:labeledEditText_textLayout="@layout/country_code_text"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="1dp"
+            android:layout_height="47dp"
+            android:background="@color/signal_colorBackground"
+            app:layout_constraintLeft_toRightOf="@id/country_code"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <org.thoughtcrime.securesms.components.LabeledEditText
+            android:id="@+id/number"
+            android:layout_width="0dp"
+            android:layout_height="47dp"
+            app:labeledEditText_textLayout="@layout/phone_text"
+            app:layout_constraintLeft_toRightOf="@id/divider2"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintRight_toRightOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/login_with_tg_button"
+        style="@style/Signal.Widget.Button.Large.Tonal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_gravity="center"
+        android:paddingStart="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registerButton"
+        android:paddingEnd="16dp"
+        android:text="@string/login_with_telegram" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cancel_button"
+        style="@style/Signal.Widget.Button.Large.Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@android:string/cancel"
+        android:textColor="@color/core_grey_60"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_with_tg_button"
+        app:layout_constraintVertical_bias="0" />
+<!--    <TextView-->
+<!--        android:id="@+id/info_label"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:visibility="gone"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:autoLink="web"-->
+<!--        android:textSize="14sp"-->
+<!--        android:textColor="@color/signal_colorLabel"-->
+<!--        android:text="@string/verification_with_telegram_bot"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/cancel_button"-->
+<!--        app:layout_constraintRight_toRightOf="parent"/>-->
+
+    <org.thoughtcrime.securesms.util.views.CircularProgressMaterialButton
+        android:id="@+id/registerButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:circularProgressMaterialButton__label="@string/RegistrationActivity_next"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout3"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3"
+        app:materialThemeOverlay="@style/ThemeOverlay.Signal.CircularProgressIndicator.Primary" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

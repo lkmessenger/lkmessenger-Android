@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.linkmessenger.profile.view.activities.PostsViewerActivity">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:background="@color/signal_colorBackground"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titleTextColor="@color/signal_text_primary"
+            app:title="@string/collections"
+            app:navigationIcon="@drawable/ic_fluent_chevron_left_24_regular"/>
+    </com.google.android.material.appbar.AppBarLayout>
+    <org.linkmessenger.base.ui.components.RecyclerListView
+        android:id="@+id/items"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/signal_colorSecondaryBackground"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/loading"
+        android:visibility="gone"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        app:trackThickness="2dp"
+        android:indeterminate="true"
+        app:trackCornerRadius="1dp"
+        app:trackColor="@color/signal_colorBackground"
+        app:indicatorColor="@color/signal_colorPrimary"/>
+            <LinearLayout
+                android:id="@+id/empty_state"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolbar_barrier"
+                tools:visibility="visible">
+            <ImageView
+                android:id="@+id/conversation_list_empty_state_new_message"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                android:padding="12dp"
+                android:background="@drawable/circle_tintable"
+                android:backgroundTint="@color/signal_colorSecondaryBackground"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_fluent_bookmark_24_regular"
+                app:tint="@color/signal_text_primary" />
+            <TextView
+                style="@style/Signal.Text.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:textColor="@color/signal_text_primary"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="40dp"
+                android:gravity="center"
+                android:text="@string/collection_empty_message" />
+        </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

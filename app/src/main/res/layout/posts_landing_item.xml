@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingStart="6dp"
+    android:paddingEnd="6dp"
+    tools:viewBindingIgnore="true">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/story"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true"
+        android:background="@color/signal_background_primary"
+        android:transitionName="story"
+        app:shapeAppearance="@style/ShapeAppearanceOverlay.Signal.Story.Preview"
+        tools:src="@drawable/test_gradient" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <org.thoughtcrime.securesms.avatar.view.AvatarView
+                android:id="@+id/avatar"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/add_to_story"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="46dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/stories_my_story_add_background"
+                android:scaleType="centerInside"
+                app:layout_constraintStart_toStartOf="@id/avatar"
+                app:layout_constraintTop_toTopOf="@id/avatar"
+                app:srcCompat="@drawable/ic_union" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/sender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/StoriesLandingFragment__my_stories"
+            android:textAppearance="@style/Signal.Text.BodyLarge"
+            android:textColor="@color/signal_colorOnSurface"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/date"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="16dp"-->
+    <!--        android:layout_marginEnd="16dp"-->
+    <!--        android:text="@string/StoriesLandingFragment__tap_to_add_a_story"-->
+    <!--        android:textAppearance="@style/Signal.Text.BodyMedium"-->
+    <!--        android:textColor="@color/signal_colorOnSurfaceVariant"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toEndOf="@id/avatar"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/sender" />-->
+</RelativeLayout>

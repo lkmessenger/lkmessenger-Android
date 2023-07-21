@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/container"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:id="@+id/avatar"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/display_name"
+        android:layout_marginStart="8dp"
+        style="@style/Signal.Text.Preview.Medium.Primary"
+        app:layout_constraintStart_toEndOf="@+id/avatar"
+        app:layout_constraintTop_toTopOf="@+id/avatar" />
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:id="@+id/time_ago"
+        app:layout_constraintBottom_toBottomOf="@+id/display_name"
+        app:layout_constraintStart_toEndOf="@+id/display_name"
+        app:layout_constraintTop_toTopOf="@+id/display_name" />
+
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="16dp"
+        android:textIsSelectable="true"
+        app:layout_constraintEnd_toStartOf="@id/more"
+        app:layout_constraintStart_toStartOf="@+id/display_name"
+        app:layout_constraintTop_toBottomOf="@+id/display_name" />
+
+    <ImageButton
+        android:id="@+id/more"
+        style="@style/Widget.AppCompat.ActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:clickable="false"
+        android:background="@color/transparent"
+        android:src="@drawable/ic_fluent_more_vertical_20_regular"
+        app:layout_constraintBottom_toBottomOf="@+id/avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/avatar"
+        app:tint="@color/signal_text_primary" />
+
+    <TextView
+        style="@style/Signal.Text.Preview.Medium.Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/reply_comment_action"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:textSize="12sp"
+        android:text="@string/MessageNotifier_reply"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintStart_toStartOf="@+id/comment"
+        app:layout_constraintTop_toBottomOf="@+id/comment" />
+
+    <View
+        android:layout_width="48dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:visibility="visible"
+        android:id="@+id/views_reply_divider"
+        android:background="@color/grey_300"
+        app:layout_constraintTop_toBottomOf="@id/comment_replies_recycler"
+        app:layout_constraintStart_toStartOf="@+id/reply_comment_action" />
+
+    <TextView
+        android:id="@+id/view_more_replies"
+        style="@style/Signal.Text.Preview.Medium.Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View 1 more reply"
+        android:textSize="12sp"
+        android:visibility="visible"
+        android:layout_marginStart="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/views_reply_divider"
+        app:layout_constraintStart_toEndOf="@+id/views_reply_divider"
+        app:layout_constraintTop_toTopOf="@+id/views_reply_divider" />
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/loading"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        app:layout_constraintStart_toStartOf="@+id/reply_comment_action"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/view_more_replies"
+        app:trackThickness="2dp"
+        android:indeterminate="true"
+        app:trackCornerRadius="1dp"
+        android:layout_marginBottom="4dp"
+        android:layout_gravity="bottom"
+        app:trackColor="@color/signal_colorBackground"
+        app:indicatorColor="@color/signal_colorPrimary"/>
+    <org.linkmessenger.base.ui.components.RecyclerListView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        android:id="@+id/comment_replies_recycler"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/reply_comment_action"
+        app:layout_constraintTop_toBottomOf="@+id/reply_comment_action" />
+    <View
+        android:layout_width="48dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:id="@+id/hide_reply_divider"
+        android:background="@color/grey_300"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/comment_replies_recycler"
+        app:layout_constraintStart_toStartOf="@+id/comment_replies_recycler" />
+
+    <TextView
+        android:id="@+id/hide_all_replies"
+        style="@style/Signal.Text.Preview.Medium.Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hide replies"
+        android:visibility="gone"
+        android:textSize="12sp"
+        android:layout_marginStart="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/hide_reply_divider"
+        app:layout_constraintStart_toEndOf="@+id/hide_reply_divider"
+        app:layout_constraintTop_toTopOf="@+id/hide_reply_divider" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

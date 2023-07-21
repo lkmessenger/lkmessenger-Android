@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:viewBindingIgnore="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signal_colorSecondaryBackground"
+    android:orientation="vertical">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:text="@string/RegistrationActivity_country"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+        <ImageButton
+            android:id="@+id/navigate_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:tint="@color/signal_text_primary"
+            style="@style/Widget.AppCompat.ActionButton"
+            android:clickable="true"
+            android:src="@drawable/ic_baseline_chevron_left_24"/>
+    </FrameLayout>
+    <EditText
+        android:id="@+id/country_search"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/soft_background"
+        android:backgroundTint="@color/signal_colorBackground"
+        android:drawablePadding="8dp"
+        android:drawableStart="@drawable/ic_search_24"
+        android:hint="@string/country_selection_fragment__search"
+        app:drawableTint="@color/signal_icon_tint_primary"
+        android:inputType="text"
+        tools:targetApi="m" />
+
+    <ListView
+        android:id="@android:id/list"
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:choiceMode="singleChoice"
+        android:divider="@color/link_divider_color"
+        android:dividerHeight="1dp" />
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="@string/country_selection_fragment__loading_countries"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</LinearLayout>

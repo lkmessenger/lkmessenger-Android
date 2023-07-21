@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/signal_colorSecondaryBackground">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="8dp"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="8dp"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="8dp"/>
+    <org.thoughtcrime.securesms.avatar.view.AvatarView
+        android:id="@+id/avatar"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        app:layout_constraintLeft_toRightOf="@id/left_guideline"
+        app:layout_constraintTop_toBottomOf="@id/top_guideline"/>
+    <TextView
+        android:id="@+id/sender"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginStart="6dp"
+        android:text="@string/StoriesLandingFragment__my_stories"
+        android:textColor="@color/signal_colorOnSurface"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/avatar"
+        app:layout_constraintLeft_toRightOf="@+id/avatar"
+        app:layout_constraintRight_toLeftOf="@id/more"
+        app:layout_constraintTop_toBottomOf="@id/top_guideline"/>
+
+    <ImageButton
+        android:id="@+id/more"
+        style="@style/Widget.AppCompat.ActionButton"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:contentDescription="@string/post_item_more_button"
+        android:src="@drawable/ic_fluent_more_horizontal_24_regular"
+        app:layout_constraintRight_toLeftOf="@id/right_guideline"
+        app:layout_constraintTop_toBottomOf="@id/top_guideline"
+        tools:ignore="TouchTargetSizeCheck,RedundantDescriptionCheck" />
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/post_header_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="avatar, sender, more"/>
+
+    <org.linkmessenger.utils.view.SquareViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/post_header_barrier"
+        tools:ignore="SpeakableTextPresentCheck" />
+    <me.relex.circleindicator.CircleIndicator
+        android:id="@+id/indicator"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:elevation="4dp"
+        app:ci_height="4dp"
+        app:ci_width="4dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/viewpager" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/NumericKeyboardView__5"
+        app:chipBackgroundColor="@color/signal_colorBackground"
+        app:chipCornerRadius="24dp"
+        app:chipIcon="@drawable/ic_fluent_heart_24_regular"
+        app:chipIconTint="@color/signal_text_primary"
+        app:iconEndPadding="4dp"
+        app:iconStartPadding="8dp"
+        tools:ignore="DuplicateSpeakableTextCheck" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:chipIconTint="@color/signal_text_primary"
+        android:text="@string/NumericKeyboardView__5"
+        app:chipBackgroundColor="@color/signal_colorBackground"
+        app:chipIcon="@drawable/ic_fluent_chat_empty_24_regular"
+        app:iconEndPadding="4dp"
+        app:chipCornerRadius="24dp"
+        android:layout_marginStart="8dp"
+        app:iconStartPadding="8dp" />
+    <com.google.android.material.chip.Chip
+        android:id="@+id/share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/NumericKeyboardView__5"
+        app:chipIconTint="@color/signal_text_primary"
+        app:chipBackgroundColor="@color/signal_colorBackground"
+        app:chipIcon="@drawable/ic_fluent_send_24_regular"
+        app:iconEndPadding="4dp"
+        android:layout_marginStart="8dp"
+        app:chipCornerRadius="24dp"
+        app:iconStartPadding="8dp" />
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/actions_flow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_bias="0"
+        app:constraint_referenced_ids="like, comment, share"
+        app:flow_horizontalStyle="packed"
+        app:flow_horizontalGap="8dp"
+        app:layout_constraintLeft_toLeftOf="@id/left_guideline"
+        app:layout_constraintRight_toLeftOf="@id/save"
+        app:layout_constraintTop_toBottomOf="@id/viewpager"/>
+    <ImageButton
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.ActionButton"
+        android:src="@drawable/ic_fluent_bookmark_24_regular"
+        app:layout_constraintTop_toBottomOf="@id/viewpager"
+        app:layout_constraintRight_toLeftOf="@id/right_guideline"
+        app:tint="@color/signal_text_primary"
+        android:contentDescription="@string/save_to_collection_icon" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/actions_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="actions_flow, save"/>
+    <TextView
+        android:id="@+id/sender_bottom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/StoriesLandingFragment__my_stories"
+        android:textColor="@color/signal_colorOnSurface"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="@id/left_guideline"
+        app:layout_constraintTop_toBottomOf="@id/actions_barrier"/>
+
+    <TextView
+        android:id="@+id/sender_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="4dp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:text="@string/BackupDialog_please_acknowledge_your_understanding_by_marking_the_confirmation_check_box"
+        android:textColor="@color/signal_colorOnSurface"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@id/sender_bottom"
+        app:layout_constraintEnd_toEndOf="@id/right_guideline"
+        app:layout_constraintTop_toBottomOf="@id/actions_barrier"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/Signal.Text.BodyMedium"
+        android:textColor="@color/signal_colorOnSurfaceVariant"
+        android:textSize="12sp"
+        tools:text="10m"
+        app:layout_constraintLeft_toLeftOf="@id/left_guideline"
+        app:layout_constraintTop_toBottomOf="@id/sender_description"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

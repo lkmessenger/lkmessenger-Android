@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Signal.Title1"
+        android:text="@string/verified_account"/>
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textAppearance="@style/Signal.Text.BodyMedium"
+        android:text="@string/verified_account_description"
+        app:drawableLeftCompat="@drawable/ic_official_28"
+        android:drawablePadding="8dp"/>
+    <TextView
+        android:id="@+id/sell_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:textAppearance="@style/Signal.Text.BodyMedium"
+        android:text="@string/verified_account_sell_description"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/request_button"
+        style="@style/Link.Widget.Button.Base.Tonal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="50dp"
+        android:layout_marginTop="32dp"
+        app:iconTint="@color/signal_colorPrimary"
+        app:iconSize="20dp"
+        app:icon="@drawable/ic_fluent_people_checkmark_24_filled"
+        app:iconGravity="textStart"
+        android:text="@string/verify_account"/>
+</LinearLayout>

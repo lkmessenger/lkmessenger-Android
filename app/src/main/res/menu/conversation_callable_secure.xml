@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="@string/conversation_callable_secure__menu_video"
+          android:id="@+id/menu_video_secure"
+          android:icon="@drawable/ic_fluent_video_24_regular"
+          app:iconTint="@color/signal_colorPrimary"
+            android:iconTint="@color/signal_colorPrimary"
+          app:showAsAction="always" />
+
+    <item android:title="@string/conversation_callable_secure__menu_call"
+          android:id="@+id/menu_call_secure"
+          android:icon="@drawable/ic_fluent_call_24_regular"
+          app:iconTint="@color/call_icon_green"
+          android:iconTint="@color/call_icon_green"
+          app:showAsAction="always" />
+
+</menu>

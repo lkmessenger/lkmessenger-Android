@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:viewBindingIgnore="true"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:theme="@style/Theme.Signal.RoundedBottomSheet.Light">
+
+        <View
+            android:id="@+id/bottom_sheet_handle"
+            android:layout_width="60dp"
+            android:layout_height="4dp"
+            android:background="@drawable/bottom_sheet_handle"
+            android:layout_marginStart="@dimen/dsl_settings_gutter"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/dsl_settings_gutter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/interactions_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_handle">
+
+            <LinearLayout
+                android:id="@+id/button_strip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:paddingTop="24dp"
+                android:paddingBottom="16dp">
+
+                <LinearLayout
+                    android:id="@+id/button_strip_share_container"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/share_button"
+                        android:backgroundTint="@color/signal_colorSecondaryBackground"
+                        style="@style/Signal.Widget.ImageView.ActionButton"
+                        android:contentDescription="@string/ShareableGroupLinkDialogFragment__share"
+                        app:srcCompat="@drawable/ic_fluent_share_android_24_regular" />
+
+                    <TextView
+                        android:id="@+id/message_label"
+                        style="@style/Signal.Widget.TextView.ActionButton"
+                        android:text="@string/ShareableGroupLinkDialogFragment__share" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/button_strip_copy_link_container"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/copy_link"
+                        android:backgroundTint="@color/signal_colorSecondaryBackground"
+                        style="@style/Signal.Widget.ImageView.ActionButton"
+                        android:contentDescription="@string/fallback_menu_item_copy_link"
+                        app:srcCompat="@drawable/ic_fluent_link_24_regular" />
+
+                    <TextView
+                        android:id="@+id/copy_link_label"
+                        style="@style/Signal.Widget.TextView.ActionButton"
+                        android:text="@string/fallback_menu_item_copy_link" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/button_strip_save_container"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/save_button"
+                        style="@style/Signal.Widget.ImageView.ActionButton"
+                        android:contentDescription="@string/AvatarPickerFragment__save"
+                        android:backgroundTint="@color/signal_colorSecondaryBackground"
+                        app:srcCompat="@drawable/ic_fluent_bookmark_24_regular" />
+
+                    <TextView
+                        android:id="@+id/save_audio_label"
+                        style="@style/Signal.Widget.TextView.ActionButton"
+                        android:text="@string/AvatarPickerFragment__save" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_300"/>
+
+
+
+            <TextView
+                android:id="@+id/rbs_turn_off_comment_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:minHeight="56dp"
+                android:paddingStart="@dimen/dsl_settings_gutter"
+                android:paddingEnd="@dimen/dsl_settings_gutter"
+                android:text="@string/turn_off_commenting"
+                android:textAppearance="@style/Signal.Text.BodyLarge"
+                app:drawableStartCompat="@drawable/ic_fluent_chat_off_24_regular" />
+
+            <TextView
+                android:id="@+id/rbs_edit_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:minHeight="56dp"
+                android:paddingStart="@dimen/dsl_settings_gutter"
+                android:paddingEnd="@dimen/dsl_settings_gutter"
+                android:text="@string/AvatarPickerFragment__edit"
+                android:textAppearance="@style/Signal.Text.BodyLarge"
+                app:drawableStartCompat="@drawable/ic_fluent_edit_24_regular"/>
+
+
+            <TextView
+                android:id="@+id/rbs_delete_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:minHeight="56dp"
+                android:paddingStart="@dimen/dsl_settings_gutter"
+                android:paddingEnd="@dimen/dsl_settings_gutter"
+                android:text="@string/ReviewCard__delete"
+                android:textColor="@color/signal_colorError"
+                app:drawableTint="@color/signal_colorError"
+                android:textAppearance="@style/Signal.Text.BodyLarge"
+                app:drawableStartCompat="@drawable/ic_fluent_delete_24_regular"/>
+
+<!--            <TextView-->
+<!--                android:id="@+id/rbs_add_to_group_button"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="?selectableItemBackground"-->
+<!--                android:drawablePadding="16dp"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:minHeight="56dp"-->
+<!--                android:paddingStart="@dimen/dsl_settings_gutter"-->
+<!--                android:paddingEnd="@dimen/dsl_settings_gutter"-->
+<!--                android:textAppearance="@style/Signal.Text.BodyLarge"-->
+<!--                android:visibility="gone"-->
+<!--                app:drawableStartCompat="@drawable/ic_group_24"-->
+<!--                tools:text="@string/RecipientBottomSheet_add_to_a_group"-->
+<!--                tools:visibility="visible" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rbs_add_contact_button"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="?selectableItemBackground"-->
+<!--                android:drawablePadding="16dp"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:minHeight="56dp"-->
+<!--                android:paddingStart="@dimen/dsl_settings_gutter"-->
+<!--                android:paddingEnd="@dimen/dsl_settings_gutter"-->
+<!--                android:text="@string/RecipientBottomSheet_add_to_contacts"-->
+<!--                android:textAppearance="@style/Signal.Text.BodyLarge"-->
+<!--                android:visibility="gone"-->
+<!--                app:drawableStartCompat="@drawable/ic_fluent_add_24_regular"-->
+<!--                tools:visibility="visible" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rbs_contact_details_button"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="?selectableItemBackground"-->
+<!--                android:drawablePadding="16dp"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:minHeight="56dp"-->
+<!--                android:paddingStart="@dimen/dsl_settings_gutter"-->
+<!--                android:paddingEnd="@dimen/dsl_settings_gutter"-->
+<!--                android:text="@string/ConversationSettingsFragment__contact_details"-->
+<!--                android:textAppearance="@style/Signal.Text.BodyLarge"-->
+<!--                android:visibility="gone"-->
+<!--                app:drawableStartCompat="@drawable/ic_fluent_person_24_regular"-->
+<!--                tools:visibility="visible" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rbs_view_safety_number_button"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="?selectableItemBackground"-->
+<!--                android:drawablePadding="16dp"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:minHeight="56dp"-->
+<!--                android:paddingStart="@dimen/dsl_settings_gutter"-->
+<!--                android:paddingEnd="@dimen/dsl_settings_gutter"-->
+<!--                android:text="@string/RecipientBottomSheet_view_safety_number"-->
+<!--                android:textAppearance="@style/Signal.Text.BodyLarge"-->
+<!--                android:visibility="gone"-->
+<!--                app:drawableStartCompat="@drawable/ic_fluent_shield_checkmark_24_regular"-->
+<!--                app:drawableTint="@color/signal_icon_tint_primary"-->
+<!--                tools:visibility="visible" />-->
+            <include layout="@layout/dsl_divider_item"/>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/signal_colorPrimary"
+    android:background="@drawable/notification_count_background"
+    android:id="@+id/root"
+    android:padding="8dp"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/likes_icon"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_fluent_heart_20_filled"
+        app:tint="@color/white" />
+
+    <TextView
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:text="99+"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:layout_marginTop="16dp"
+        android:id="@+id/likes_count"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:id="@+id/follower_icon"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_fluent_person_20_filled"
+        app:tint="@color/white" />
+
+    <TextView
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:text="42"
+        android:textAlignment="center"
+        android:layout_marginTop="16dp"
+        android:id="@+id/follower_count"
+        android:textColor="#fff"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_fluent_chat_empty_20_filled"
+        android:layout_marginStart="4dp"
+        android:id="@+id/comment_icon"
+        app:tint="@color/white" />
+
+    <TextView
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:text="53"
+        android:layout_marginTop="16dp"
+        android:textAlignment="center"
+        android:id="@+id/comment_count"
+        android:textColor="#fff"
+        android:layout_marginStart="4dp" />
+
+
+</LinearLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="@string/convesation_group_options__recipients_list"
+          android:id="@+id/menu_group_recipients"
+          android:iconTint="@color/signal_colorSecondaryBackground"
+          android:icon="@drawable/ic_fluent_people_community_24_regular"
+          app:showAsAction="ifRoom" />
+
+</menu>

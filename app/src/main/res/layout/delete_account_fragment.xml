@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:viewBindingIgnore="true"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/delete_account_fragment_warning"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_fluent_info_28_regular"
+            app:tint="@color/signal_alert_primary" />
+
+        <TextView
+            android:id="@+id/delete_account_fragment_notice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/DeleteAccountFragment__deleting_your_account_will"
+            android:textAppearance="@style/Signal.Text.Body"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/delete_account_fragment_warning" />
+
+        <TextView
+            android:id="@+id/delete_account_fragment_bullets"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/TextAppearance.Signal.Body2"
+            app:layout_constraintTop_toBottomOf="@id/delete_account_fragment_notice"
+            tools:text="Some\nbullets\nhere" />
+
+        <TextView
+            android:id="@+id/delete_account_fragment_enter_phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/DeleteAccountFragment__enter_your_phone_number"
+            android:textAppearance="@style/TextAppearance.Signal.Body1.Bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/delete_account_fragment_bullets" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="1dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:id="@+id/enter_phone_number_layout"
+            android:background="@drawable/soft_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/delete_account_fragment_enter_phone_number">
+            <Spinner
+                android:id="@+id/delete_account_fragment_country_spinner"
+                android:layout_width="0dp"
+                android:layout_height="47dp"
+                android:layout_marginStart="4dp"
+                android:layout_gravity="center_vertical"
+                android:background="@null"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/open_country_picker_icon"/>
+            <ImageView
+                android:id="@+id/open_country_picker_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_baseline_chevron_right_24"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/divider"
+                app:tint="@color/signal_text_primary" />
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/signal_colorBackground"
+                app:layout_constraintTop_toBottomOf="@id/delete_account_fragment_country_spinner" />
+
+            <org.thoughtcrime.securesms.components.LabeledEditText
+                android:id="@+id/delete_account_fragment_country_code"
+                android:layout_width="70dp"
+                android:layout_height="47dp"
+                app:labeledEditText_textLayout="@layout/country_code_text"
+                app:layout_constraintTop_toBottomOf="@id/divider"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="1dp"
+                android:layout_height="47dp"
+                android:background="@color/signal_colorBackground"
+                app:layout_constraintLeft_toRightOf="@id/delete_account_fragment_country_code"
+                app:layout_constraintTop_toBottomOf="@id/divider"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+            <org.thoughtcrime.securesms.components.LabeledEditText
+                android:id="@+id/delete_account_fragment_number"
+                android:layout_width="0dp"
+                android:layout_height="47dp"
+                app:labeledEditText_textLayout="@layout/phone_text"
+                app:layout_constraintLeft_toRightOf="@id/divider2"
+                app:layout_constraintTop_toBottomOf="@id/divider"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/delete_account_fragment_delete"
+            style="@style/Signal.Widget.Button.Large.Danger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/DeleteAccountFragment__delete_account"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/enter_phone_number_layout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
