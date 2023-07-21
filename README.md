@@ -2,11 +2,6 @@
 Link Messenger is neither sponsored by Signal nor affiliated with Signal.
 
 
-## Documentation
-Looking for documentation? Check out the wiki!
-
-https://github.com/signalapp/Signal-Android/wiki
-
 ## License
 LinkMessenger uses Signal sources. Link Messenger is neither sponsored by Signal nor affiliated with Signal.
 
