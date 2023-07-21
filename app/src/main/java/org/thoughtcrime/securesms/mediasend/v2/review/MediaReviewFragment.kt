@@ -1,0 +1,584 @@
+package org.thoughtcrime.securesms.mediasend.v2.review
+
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.os.Bundle
+import android.view.View
+import android.widget.*
+import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import app.cash.exhaustive.Exhaustive
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.linkmessenger.posts.viewmodel.PostsViewModel
+import org.thoughtcrime.securesms.R
+import org.thoughtcrime.securesms.contacts.paged.ContactSearchKey
+import org.thoughtcrime.securesms.conversation.MessageSendType
+import org.thoughtcrime.securesms.conversation.mutiselect.forward.MultiselectForwardActivity
+import org.thoughtcrime.securesms.conversation.mutiselect.forward.MultiselectForwardFragmentArgs
+import org.thoughtcrime.securesms.mediasend.MediaSendActivityResult
+import org.thoughtcrime.securesms.mediasend.v2.*
+import org.thoughtcrime.securesms.mediasend.v2.MediaSelectionNavigator.Companion.requestPermissionsForGallery
+import org.thoughtcrime.securesms.mediasend.v2.stories.StoriesMultiselectForwardActivity
+import org.thoughtcrime.securesms.mms.SentMediaQuality
+import org.thoughtcrime.securesms.permissions.Permissions
+import org.thoughtcrime.securesms.recipients.Recipient
+import org.thoughtcrime.securesms.util.LifecycleDisposable
+import org.thoughtcrime.securesms.util.MediaUtil
+import org.thoughtcrime.securesms.util.adapter.mapping.MappingAdapter
+import org.thoughtcrime.securesms.util.fragments.requireListener
+import org.thoughtcrime.securesms.util.views.TouchInterceptingFrameLayout
+import org.thoughtcrime.securesms.util.visible
+
+/**
+ * Allows the user to view and edit selected media.
+ */
+class MediaReviewFragment : Fragment(R.layout.v2_media_review_fragment), KoinComponent {
+
+  private val sharedViewModel: MediaSelectionViewModel by viewModels(
+    ownerProducer = { requireActivity() }
+  )
+  private val postViewModel:PostsViewModel = get()
+
+  private lateinit var callback: Callback
+
+  private lateinit var drawToolButton: View
+  private lateinit var cropAndRotateButton: View
+  private lateinit var qualityButton: ImageView
+  private lateinit var saveButton: View
+  private lateinit var sendButton: ImageView
+  private lateinit var addMediaButton: View
+  private lateinit var viewOnceButton: ViewSwitcher
+  private lateinit var viewOnceMessage: TextView
+  private lateinit var addMessageButton: TextView
+  private lateinit var addMessageEntry: TextView
+  private lateinit var recipientDisplay: TextView
+  private lateinit var pager: ViewPager2
+  private lateinit var controls: ConstraintLayout
+  private lateinit var selectionRecycler: RecyclerView
+  private lateinit var controlsShade: View
+  private lateinit var progress: ProgressBar
+  private lateinit var progressWrapper: TouchInterceptingFrameLayout
+
+  private val navigator = MediaSelectionNavigator(
+    toGallery = R.id.action_mediaReviewFragment_to_mediaGalleryFragment
+  )
+
+  private var animatorSet: AnimatorSet? = null
+  private var disposables: LifecycleDisposable = LifecycleDisposable()
+
+  @SuppressLint("CheckResult")
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    postponeEnterTransition()
+
+    disposables.bindTo(viewLifecycleOwner)
+
+    callback = requireListener()
+
+    drawToolButton = view.findViewById(R.id.draw_tool)
+    cropAndRotateButton = view.findViewById(R.id.crop_and_rotate_tool)
+    qualityButton = view.findViewById(R.id.quality_selector)
+    saveButton = view.findViewById(R.id.save_to_media)
+    sendButton = view.findViewById(R.id.send)
+    addMediaButton = view.findViewById(R.id.add_media)
+    viewOnceButton = view.findViewById(R.id.view_once_toggle)
+    addMessageButton = view.findViewById(R.id.add_a_message)
+    addMessageEntry = view.findViewById(R.id.add_a_message_entry)
+    recipientDisplay = view.findViewById(R.id.recipient)
+    pager = view.findViewById(R.id.media_pager)
+    controls = view.findViewById(R.id.controls)
+    selectionRecycler = view.findViewById(R.id.selection_recycler)
+    selectionRecycler.layoutManager =
+      LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+    controlsShade = view.findViewById(R.id.controls_shade)
+    viewOnceMessage = view.findViewById(R.id.view_once_message)
+    progress = view.findViewById(R.id.progress)
+    progressWrapper = view.findViewById(R.id.progress_wrapper)
+
+    DrawableCompat.setTint(progress.indeterminateDrawable, Color.WHITE)
+    progressWrapper.setOnInterceptTouchEventListener { true }
+
+    val pagerAdapter = MediaReviewFragmentPagerAdapter(this)
+
+    disposables += sharedViewModel.hudCommands.subscribe {
+      when (it) {
+        HudCommand.ResumeEntryTransition -> startPostponedEnterTransition()
+        else -> Unit
+      }
+    }
+
+    pager.adapter = pagerAdapter
+
+    drawToolButton.setOnClickListener {
+      sharedViewModel.sendCommand(HudCommand.StartDraw)
+    }
+
+    cropAndRotateButton.setOnClickListener {
+      sharedViewModel.sendCommand(HudCommand.StartCropAndRotate)
+    }
+
+    qualityButton.setOnClickListener {
+      QualitySelectorBottomSheetDialog.show(parentFragmentManager)
+    }
+
+    saveButton.setOnClickListener {
+      sharedViewModel.sendCommand(HudCommand.SaveMedia)
+    }
+
+    if(sharedViewModel.isAddingNewPost()){
+      qualityButton.visibility = View.GONE
+      addMessageButton.visibility = View.GONE
+      addMessageEntry.visibility = View.GONE
+      controlsShade.visibility = View.GONE
+    }else{
+      qualityButton.visibility = View.VISIBLE
+      addMessageButton.visibility = View.VISIBLE
+      addMessageEntry.visibility = View.VISIBLE
+      controlsShade.visibility = View.VISIBLE
+    }
+
+    val multiselectContract = MultiselectForwardActivity.SelectionContract()
+    val storiesContract = StoriesMultiselectForwardActivity.SelectionContract()
+
+    val multiselectLauncher = registerForActivityResult(multiselectContract) { keys ->
+      if (keys.isNotEmpty()) {
+        performSend(keys)
+      }
+    }
+
+    val storiesLauncher = registerForActivityResult(storiesContract) { keys ->
+      if (keys.isNotEmpty()) {
+        performSend(keys)
+      }
+    }
+
+    sendButton.setOnClickListener {
+      if (sharedViewModel.isAddingNewPost()){
+        sharedViewModel.transformMedia().subscribe { result ->
+          result.let {
+            postViewModel.postMedias(ArrayList(it))
+            requireActivity().setResult(Activity.RESULT_OK)
+            requireActivity().finish()
+          }
+        }
+      }else{
+        if (sharedViewModel.isContactSelectionRequired) {
+          val args = MultiselectForwardFragmentArgs(
+                  false,
+                  title = R.string.MediaReviewFragment__send_to,
+                  storySendRequirements = sharedViewModel.getStorySendRequirements(),
+                  isSearchEnabled = !sharedViewModel.isStory()
+          )
+
+          if (sharedViewModel.isStory()) {
+            val previews = sharedViewModel.state.value?.selectedMedia?.take(2)?.map { it.uri } ?: emptyList()
+            storiesLauncher.launch(StoriesMultiselectForwardActivity.Args(args, previews))
+          } else {
+            multiselectLauncher.launch(args)
+          }
+        } else {
+          performSend()
+        }
+      }
+    }
+
+
+    addMediaButton.setOnClickListener {
+      if(sharedViewModel.isAddingNewPost() && sharedViewModel.state.value?.selectedMedia?.find { MediaUtil.isVideo(it.mimeType) }!=null){
+        //TODO show toast:"Only one video can be selected"
+      }else{
+        launchGallery()
+      }
+    }
+
+    viewOnceButton.setOnClickListener {
+      sharedViewModel.incrementViewOnceState()
+    }
+
+    addMessageButton.setOnClickListener {
+      AddMessageDialogFragment.show(parentFragmentManager, sharedViewModel.state.value?.message)
+    }
+
+    addMessageEntry.setOnClickListener {
+      AddMessageDialogFragment.show(parentFragmentManager, sharedViewModel.state.value?.message)
+    }
+
+    if (sharedViewModel.isReply) {
+      addMessageButton.setText(R.string.MediaReviewFragment__add_a_reply)
+    }
+
+    pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+      override fun onPageSelected(position: Int) {
+        sharedViewModel.setFocusedMedia(position)
+      }
+    })
+
+    val selectionAdapter = MappingAdapter()
+    MediaReviewAddItem.register(selectionAdapter) {
+      launchGallery()
+    }
+    MediaReviewSelectedItem.register(selectionAdapter) { media, isSelected ->
+      if (isSelected) {
+        sharedViewModel.removeMedia(media)
+      } else {
+        sharedViewModel.setFocusedMedia(media)
+      }
+    }
+    selectionRecycler.adapter = selectionAdapter
+    ItemTouchHelper(MediaSelectionItemTouchHelper(sharedViewModel)).attachToRecyclerView(selectionRecycler)
+
+    sharedViewModel.state.observe(viewLifecycleOwner) { state ->
+      if(sharedViewModel.isAddingNewPost()&& state.selectedMedia.find { MediaUtil.isVideo(it.mimeType) }!=null){
+        postViewModel.postMedias(ArrayList(state.selectedMedia))
+        requireActivity().setResult(Activity.RESULT_OK)
+        requireActivity().finish()
+      }else{
+        pagerAdapter.submitMedia(state.selectedMedia)
+
+        selectionAdapter.submitList(
+          state.selectedMedia.map { MediaReviewSelectedItem.Model(it, state.focusedMedia == it) } + MediaReviewAddItem.Model
+        )
+
+        presentSendButton(state.sendType, state.recipient)
+        presentPager(state)
+        presentAddMessageEntry(state.message)
+        presentImageQualityToggle(state.quality)
+
+        viewOnceButton.displayedChild = if (state.viewOnceToggleState == MediaSelectionState.ViewOnceToggleState.ONCE) 1 else 0
+
+        computeViewStateAndAnimate(state)
+      }
+    }
+
+    sharedViewModel.mediaErrors.observe(viewLifecycleOwner, this::handleMediaValidatorFilterError)
+
+    requireActivity().onBackPressedDispatcher.addCallback(
+      viewLifecycleOwner,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          callback.onPopFromReview()
+        }
+      }
+    )
+//    if(sharedViewModel.isAddingNewPost()){
+//      postViewModel.medias.observe(viewLifecycleOwner){
+//        sharedViewModel.setSelectedMedia(it)
+//      }
+//    }
+  }
+//  private val addMediaResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//    if (result.resultCode == Activity.RESULT_OK) {
+//
+//    }else{
+//      requireActivity().setResult(AppCompatActivity.RESULT_CANCELED)
+//      requireActivity().finish()
+//    }
+//  }
+
+
+  override fun onResume() {
+    super.onResume()
+//    if(sharedViewModel.isAddingNewPost()){
+//      sharedViewModel.setSelectedMedia(PostManager.selectedMedias)
+//    }
+    sharedViewModel.kick()
+  }
+
+  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
+  }
+
+  private fun handleMediaValidatorFilterError(error: MediaValidator.FilterError) {
+    @Exhaustive
+    when (error) {
+      MediaValidator.FilterError.ItemTooLarge -> Toast.makeText(requireContext(), R.string.MediaReviewFragment__one_or_more_items_were_too_large, Toast.LENGTH_SHORT).show()
+      MediaValidator.FilterError.ItemInvalidType -> Toast.makeText(requireContext(), R.string.MediaReviewFragment__one_or_more_items_were_invalid, Toast.LENGTH_SHORT).show()
+      MediaValidator.FilterError.TooManyItems -> Toast.makeText(requireContext(), R.string.MediaReviewFragment__too_many_items_selected, Toast.LENGTH_SHORT).show()
+      is MediaValidator.FilterError.NoItems -> {
+        if (error.cause != null) {
+          handleMediaValidatorFilterError(error.cause)
+        } else {
+          Toast.makeText(requireContext(), R.string.MediaReviewFragment__one_or_more_items_were_invalid, Toast.LENGTH_SHORT).show()
+        }
+        callback.onNoMediaSelected()
+      }
+    }
+  }
+
+  private fun launchGallery() {
+    val controller = findNavController()
+    requestPermissionsForGallery {
+      navigator.goToGallery(controller)
+    }
+  }
+
+  private fun performSend(selection: List<ContactSearchKey> = listOf()) {
+    progressWrapper.visible = true
+    progressWrapper.animate()
+      .setStartDelay(300)
+      .setInterpolator(MediaAnimations.interpolator)
+      .alpha(1f)
+
+    sharedViewModel
+      .send(selection.filterIsInstance(ContactSearchKey.RecipientSearchKey::class.java))
+      .subscribe(
+        { result -> callback.onSentWithResult(result) },
+        { error -> callback.onSendError(error) },
+        { callback.onSentWithoutResult() }
+      )
+  }
+
+  private fun presentAddMessageEntry(message: CharSequence?) {
+    addMessageEntry.setText(message, TextView.BufferType.SPANNABLE)
+  }
+
+  private fun presentImageQualityToggle(quality: SentMediaQuality) {
+    qualityButton.setImageResource(
+      when (quality) {
+        SentMediaQuality.STANDARD -> R.drawable.ic_sq_24
+        SentMediaQuality.HIGH -> R.drawable.ic_hq_24
+      }
+    )
+  }
+
+  private fun presentSendButton(sendType: MessageSendType, recipient: Recipient?) {
+//    val sendButtonForegroundDrawable = when {
+//      recipient != null -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_send_24)
+//      else -> ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_end_24)
+//    }
+//
+//    val sendButtonForegroundTint = when {
+//      recipient != null -> ContextCompat.getColor(requireContext(), R.color.signal_colorOnCustom)
+//      else -> ContextCompat.getColor(requireContext(), R.color.signal_colorSecondaryContainer)
+//    }
+    if(sharedViewModel.isAddingNewPost()){
+      val sendButtonBackgroundTint = when {
+        sendType.usesSignalTransport -> ContextCompat.getColor(requireContext(), R.color.signal_colorPrimary)
+        else -> ContextCompat.getColor(requireContext(), R.color.signal_colorPrimary)
+      }
+
+      sendButton.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_fluent_chevron_right_24_regular))
+      sendButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.signal_text_primary))
+      ViewCompat.setBackgroundTintList(sendButton, ColorStateList.valueOf(sendButtonBackgroundTint))
+    }else{
+      val sendButtonBackgroundTint = when {
+        sendType.usesSignalTransport -> ContextCompat.getColor(requireContext(), R.color.signal_colorSecondaryBackground)
+        else -> ContextCompat.getColor(requireContext(), R.color.signal_colorSecondaryBackground)
+      }
+
+      sendButton.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_fluent_send_24_filled))
+      sendButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.signal_colorPrimary))
+      ViewCompat.setBackgroundTintList(sendButton, ColorStateList.valueOf(sendButtonBackgroundTint))
+    }
+
+  }
+
+  private fun presentPager(state: MediaSelectionState) {
+    pager.isUserInputEnabled = state.isTouchEnabled
+
+    val indexOfSelectedItem = state.selectedMedia.indexOf(state.focusedMedia)
+
+    if (pager.currentItem == indexOfSelectedItem) {
+      return
+    }
+
+    if (indexOfSelectedItem != -1) {
+      pager.setCurrentItem(indexOfSelectedItem, false)
+    } else {
+      pager.setCurrentItem(0, false)
+    }
+  }
+
+  private fun computeViewStateAndAnimate(state: MediaSelectionState) {
+    this.animatorSet?.cancel()
+
+    val animators = mutableListOf<Animator>()
+
+    if(!sharedViewModel.isAddingNewPost()){
+      animators.addAll(computeAddMessageAnimators(state))
+      animators.addAll(computeControlsShadeAnimators(state))
+      animators.addAll(computeQualityButtonAnimators(state))
+    }
+    animators.addAll(computeViewOnceButtonAnimators(state))
+    animators.addAll(computeAddMediaButtonsAnimators(state))
+    animators.addAll(computeSendButtonAnimators(state))
+    animators.addAll(computeSaveButtonAnimators(state))
+    animators.addAll(computeCropAndRotateButtonAnimators(state))
+    animators.addAll(computeDrawToolButtonAnimators(state))
+    animators.addAll(computeRecipientDisplayAnimators(state))
+
+    val animatorSet = AnimatorSet()
+    animatorSet.playTogether(animators)
+    animatorSet.interpolator = MediaAnimations.interpolator
+    animatorSet.start()
+
+    this.animatorSet = animatorSet
+  }
+
+  private fun computeControlsShadeAnimators(state: MediaSelectionState): List<Animator> {
+    return if (state.isTouchEnabled) {
+      listOf(MediaReviewAnimatorController.getFadeInAnimator(controlsShade))
+    } else {
+      listOf(MediaReviewAnimatorController.getFadeOutAnimator(controlsShade))
+    }
+  }
+
+  private fun computeAddMessageAnimators(state: MediaSelectionState): List<Animator> {
+    return when {
+      !state.isTouchEnabled -> {
+        listOf(
+          MediaReviewAnimatorController.getFadeOutAnimator(viewOnceMessage),
+          MediaReviewAnimatorController.getFadeOutAnimator(addMessageButton),
+          MediaReviewAnimatorController.getFadeOutAnimator(addMessageEntry)
+        )
+      }
+      state.viewOnceToggleState == MediaSelectionState.ViewOnceToggleState.ONCE -> {
+        listOf(
+          MediaReviewAnimatorController.getFadeInAnimator(viewOnceMessage),
+          MediaReviewAnimatorController.getFadeOutAnimator(addMessageButton),
+          MediaReviewAnimatorController.getFadeOutAnimator(addMessageEntry)
+        )
+      }
+      state.message.isNullOrEmpty() -> {
+        listOf(
+          MediaReviewAnimatorController.getFadeOutAnimator(viewOnceMessage),
+          MediaReviewAnimatorController.getFadeInAnimator(addMessageButton),
+          MediaReviewAnimatorController.getFadeOutAnimator(addMessageEntry)
+        )
+      }
+      else -> {
+        listOf(
+          MediaReviewAnimatorController.getFadeOutAnimator(viewOnceMessage),
+          MediaReviewAnimatorController.getFadeInAnimator(addMessageEntry),
+          MediaReviewAnimatorController.getFadeOutAnimator(addMessageButton)
+        )
+      }
+    }
+  }
+
+  private fun computeViewOnceButtonAnimators(state: MediaSelectionState): List<Animator> {
+    return if (state.isTouchEnabled && state.selectedMedia.size == 1 && !state.isStory) {
+      listOf(MediaReviewAnimatorController.getFadeInAnimator(viewOnceButton))
+    } else {
+      listOf(MediaReviewAnimatorController.getFadeOutAnimator(viewOnceButton))
+    }
+  }
+
+  private fun computeAddMediaButtonsAnimators(state: MediaSelectionState): List<Animator> {
+    return when {
+      !state.isTouchEnabled || state.viewOnceToggleState == MediaSelectionState.ViewOnceToggleState.ONCE -> {
+        listOf(
+          MediaReviewAnimatorController.getFadeOutAnimator(addMediaButton),
+          MediaReviewAnimatorController.getFadeOutAnimator(selectionRecycler)
+        )
+      }
+      state.selectedMedia.size > 1 -> {
+        listOf(
+          MediaReviewAnimatorController.getFadeOutAnimator(addMediaButton),
+          MediaReviewAnimatorController.getFadeInAnimator(selectionRecycler)
+        )
+      }
+      else -> {
+        listOf(
+          MediaReviewAnimatorController.getFadeInAnimator(addMediaButton),
+          MediaReviewAnimatorController.getFadeOutAnimator(selectionRecycler)
+        )
+      }
+    }
+  }
+
+  private fun computeSendButtonAnimators(state: MediaSelectionState): List<Animator> {
+
+    val slideIn = listOf(
+      MediaReviewAnimatorController.getSlideInAnimator(sendButton),
+    )
+
+    return slideIn + if (state.isTouchEnabled) {
+      listOf(
+        MediaReviewAnimatorController.getFadeInAnimator(sendButton, state.canSend),
+      )
+    } else {
+      listOf(
+        MediaReviewAnimatorController.getFadeOutAnimator(sendButton, state.canSend),
+      )
+    }
+  }
+
+  private fun computeSaveButtonAnimators(state: MediaSelectionState): List<Animator> {
+
+    val slideIn = listOf(
+      MediaReviewAnimatorController.getSlideInAnimator(saveButton)
+    )
+
+    return slideIn + if (state.isTouchEnabled && !MediaUtil.isVideo(state.focusedMedia?.mimeType)) {
+      listOf(
+        MediaReviewAnimatorController.getFadeInAnimator(saveButton)
+      )
+    } else {
+      listOf(
+        MediaReviewAnimatorController.getFadeOutAnimator(saveButton)
+      )
+    }
+  }
+
+  private fun computeQualityButtonAnimators(state: MediaSelectionState): List<Animator> {
+    val slide = listOf(MediaReviewAnimatorController.getSlideInAnimator(qualityButton))
+
+    return slide + if (state.isTouchEnabled && !state.isStory && state.selectedMedia.any { MediaUtil.isImageType(it.mimeType) }) {
+      listOf(MediaReviewAnimatorController.getFadeInAnimator(qualityButton))
+    } else {
+      listOf(MediaReviewAnimatorController.getFadeOutAnimator(qualityButton))
+    }
+  }
+
+  private fun computeCropAndRotateButtonAnimators(state: MediaSelectionState): List<Animator> {
+    val slide = listOf(MediaReviewAnimatorController.getSlideInAnimator(cropAndRotateButton))
+
+    return slide + if (state.isTouchEnabled && MediaUtil.isImageAndNotGif(state.focusedMedia?.mimeType ?: "")) {
+      listOf(MediaReviewAnimatorController.getFadeInAnimator(cropAndRotateButton))
+    } else {
+      listOf(MediaReviewAnimatorController.getFadeOutAnimator(cropAndRotateButton))
+    }
+  }
+
+  private fun computeDrawToolButtonAnimators(state: MediaSelectionState): List<Animator> {
+    val slide = listOf(MediaReviewAnimatorController.getSlideInAnimator(drawToolButton))
+
+    return slide + if (state.isTouchEnabled && MediaUtil.isImageAndNotGif(state.focusedMedia?.mimeType ?: "")) {
+      listOf(MediaReviewAnimatorController.getFadeInAnimator(drawToolButton))
+    } else {
+      listOf(MediaReviewAnimatorController.getFadeOutAnimator(drawToolButton))
+    }
+  }
+
+  private fun computeRecipientDisplayAnimators(state: MediaSelectionState): List<Animator> {
+    return if (state.isTouchEnabled && state.recipient != null) {
+      recipientDisplay.text = if (state.recipient.isSelf) requireContext().getString(R.string.note_to_self) else state.recipient.getDisplayName(requireContext())
+      listOf(MediaReviewAnimatorController.getFadeInAnimator(recipientDisplay))
+    } else {
+      listOf(MediaReviewAnimatorController.getFadeOutAnimator(recipientDisplay))
+    }
+  }
+
+  interface Callback {
+    fun onSentWithResult(mediaSendActivityResult: MediaSendActivityResult)
+    fun onSentWithoutResult()
+    fun onSendError(error: Throwable)
+    fun onNoMediaSelected()
+    fun onPopFromReview()
+  }
+}
